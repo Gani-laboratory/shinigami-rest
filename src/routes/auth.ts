@@ -2,7 +2,7 @@ import { RoutesConfig } from "../config/routes.config";
 import express from "express";
 import cb from "../controller/auth.controller";
 
-export class UsersRoutes extends RoutesConfig {
+export class AuthRoutes extends RoutesConfig {
 	constructor(app: express.Application) {
 		super(app, "UsersRoutes");
 	}

@@ -14,12 +14,16 @@ class UsersController {
 	}
 
 	async editUser(req: express.Request, res: express.Response) {
-		const { error } = editValidation(req.body);
-		if (error) return res.status(400).json({ status: res.statusCode, message: error.details[0].message });
-		const { username, password, email } = req.body;
-		const register = await userService.create(username, password, email);
-		if (typeof register != "boolean") return res.status(400).json({ status: res.statusCode, ...register });
-		return res.json({ status: res.statusCode, message: "Please check your email inbox" });
+		try {
+			const { error } = editValidation(req.body);
+			if (error) return res.status(400).json({ status: res.statusCode, message: error.details[0].message });
+			const { username, password, email } = req.body;
+			const edit = await userService.edit("_id", req.params.userId, JSON.parse(JSON.stringify({ username, password, email })));
+			if (!edit) return res.status(400).json({ status: res.statusCode, message: `user with id ${req.params.userId} not found` });
+			return res.json({ status: res.statusCode, ...edit, koe: "oke" });
+		} catch {
+			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
+		}
 	}
 
 	async getUser(req: express.Request, res: express.Response) {
