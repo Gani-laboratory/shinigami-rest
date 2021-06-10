@@ -1,0 +1,66 @@
+{
+  "name": "shinoa-api",
+  "version": "1.0.0",
+  "description": "Shinoa API Rewrite to TypeScript and Express for better experience",
+  "main": "index.js",
+  "author": "Shinoa Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.1",
+    "@types/cors": "^2.8.10",
+    "@types/debug": "^4.1.5",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.12",
+    "@types/jsonwebtoken": "^8.5.1",
+    "@types/md5": "^2.3.0",
+    "@types/mongoose": "^5.10.5",
+    "@types/node": "^15.0.1",
+    "@types/nodemailer": "^6.4.1",
+    "@types/swagger-ui-express": "^4.1.2",
+    "@types/turndown": "^5.0.0",
+    "@types/user-agents": "^1.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.25.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
+    "cheerio": "^1.0.0-rc.9",
+    "cors": "^2.8.5",
+    "debug": "^4.3.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-winston": "^4.1.0",
+    "file-type": "^16.4.0",
+    "form-data": "^4.0.0",
+    "joi": "^17.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.3.0",
+    "mongoose": "^5.12.7",
+    "nodemailer": "^6.6.0",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6",
+    "turndown": "^7.0.0",
+    "user-agents": "^1.0.657",
+    "winston": "^3.3.3"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "watch": "tsc -W",
+    "start": "tsc && node ./dist",
+    "debug": "export DEBUG=*,-nodemon*,-winston:create-logger && npm run dev",
+    "dev": "nodemon",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "dist"
+    ],
+    "ext": "js",
+    "exec": "node dist"
+  }
+}
