@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import express from "express";
+import { Request, Response } from "express";
 import userService from "../services/users.service";
 import jwt from "jsonwebtoken";
 
 class AuthController {
-	async verifyToken(req: express.Request, res: express.Response) {
+	async verifyToken(req: Request, res: Response) {
 		const { token } = req.params;
 		jwt.verify(token, process.env.SECRET as string, {}, async (err, decode) => {
 			if (err) return res.status(400).json({ status: res.statusCode, message: "invalid token" });
