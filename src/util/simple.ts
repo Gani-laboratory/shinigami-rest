@@ -6,28 +6,16 @@ const transport = nodemailer.createTransport({
 		user: "bindakun2nd@gmail.com",
 		pass: "yhgamer123"
 	},
-	debug: true,
-	logger: true
 });
-// const transport = nodemailer.createTransport({
-// 	host: "smtp.zoho.com",
-// 	port: 465,
-// 	secure: true,
-// 	auth: {
-// 		user: "support@hanifdwyputra.xyz",
-// 		pass: "Rasca11|"
-// 	},
-// 	debug: true,
-// 	logger: true
-// });
 
 async function sendMail(email: string, token: string): Promise<void>
 {
+	const url = `${process.env.BASE_URL}${process.env.DEBUG ? `:${process.env.PORT}` : ""}`;
 	await transport.sendMail({
-		from: "Shinoa REST API <support@hanifdwyputra.xyz>",
+		from: `Shinoa REST API <support@${process.env.APP_NAME}>`,
 		to: email,
 		subject: "Shinoa REST API Verification",
-		html: `Please verify yourself by clicking <a href="https://shinigami-rest.herokuapp.com/verify/${token}">this link</a>`
+		html: `Please verify yourself by clicking <a href="${url}/verify/${token}">this link</a>`
 	});
 }
 
