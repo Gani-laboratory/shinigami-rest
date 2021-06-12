@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import nodemailer from "nodemailer";
+import { Request, Response, NextFunction } from "express";
 
 const transport = nodemailer.createTransport({
 	service: "Gmail",
@@ -19,4 +22,11 @@ async function sendMail(email: string, token: string): Promise<void>
 	});
 }
 
-export { sendMail };
+const unless = function(middleware: any, ...paths: string[]) {
+	return function(req: Request, res: Response, next: NextFunction): void {
+	  const pathCheck = paths.some(path => path === req.path);
+	  pathCheck ? next() : middleware(req, res, next);
+	};
+};
+
+export { sendMail, unless };
