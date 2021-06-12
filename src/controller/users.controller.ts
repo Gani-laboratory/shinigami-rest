@@ -7,7 +7,7 @@ class UsersController {
 		const { username, password, email } = req.body;
 		const register = await userService.create(username, password, email);
 		if (typeof register != "boolean") return res.status(400).json({ status: res.statusCode, ...register });
-		return res.json({ status: res.statusCode, message: "Please check your email inbox" });
+		return res.status(201).json({ status: res.statusCode, message: "Please check your email inbox" });
 	}
 
 	async editUser(req: Request, res: Response) {
