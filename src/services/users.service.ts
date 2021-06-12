@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { sendMail } from "../util/simple";
 import jwt from "jsonwebtoken";
 import { randomBytes } from "crypto";
+import { roles } from "../middleware/permission.middleware";
 
 async function getByUsername(username: string)
 {
@@ -71,11 +72,14 @@ async function verify(email: string, token: string): Promise<boolean|string>
 	if (!user) return "Your account has been deleted";
 	if (user.tokenVerify != token) return "Invalid token";
 	if (user.verified) return "Your account has been verified earlier! please login";
-	const apiKey = jwt.sign({ date: Date.now(), email }, process.env.SECRET as string);
+	const isOwner = process.env.OWNER?.split(" ").findIndex(v => v === email) !== -1;
+	const role = isOwner ? roles.owner : roles.member;
+	const apiKey = jwt.sign({ date: Date.now(), email, role }, process.env.SECRET as string);
 	await edit("email", email, {
 		$unset: { tokenVerify: 1 },
 		verified: true,
-		apiKey
+		apiKey,
+		role
 	});
 	return user.tokenVerify === token;
 }

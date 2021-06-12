@@ -14,9 +14,7 @@ const server: http.Server = http.createServer(app);
 const port = process.env.PORT || 3000;
 const debugLog: debug.IDebugger = debug("app");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(express.json(), express.urlencoded({ extended: true }), cors());
 
 const loggerOptions: expressWinston.LoggerOptions = {
 	transports: [new winston.transports.Console()],

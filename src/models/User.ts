@@ -13,6 +13,7 @@ const schema = new mongoose.Schema<UserDoc>({
 		type: String,
 		required: true
 	},
+	role: Number,
 	verified: Boolean,
 	tokenVerify: String,
 	apiKey: String
