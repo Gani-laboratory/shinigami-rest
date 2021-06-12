@@ -1,12 +1,12 @@
 import { RoutesConfig } from "../config/routes.config";
-import express from "express";
+import { Application } from "express";
 import cb from "../controller/auth.controller";
 
 export class AuthRoutes extends RoutesConfig {
-	constructor(app: express.Application) {
+	constructor(app: Application) {
 		super(app, "UsersRoutes");
 	}
-	handler(): express.Application {
+	handler(): Application {
 		this.app.route("/verify/:token")
 			.get(cb.verifyToken);
 
