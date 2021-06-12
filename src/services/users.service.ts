@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import User from "../models/User";
 import bcrypt from "bcrypt";
@@ -25,7 +26,7 @@ async function get(usernameOrEmail: string)
 	return await getByEmail(usernameOrEmail) || await getByUsername(usernameOrEmail);
 }
 
-async function edit(key: string, value: string, body: Record<string, string|boolean>)
+async function edit(key: string, value: string, body: Record<string, any>)
 {
 	return await User.findOneAndUpdate(
 		{ [key]: value },
@@ -72,8 +73,8 @@ async function verify(email: string, token: string): Promise<boolean|string>
 	if (user.verified) return "Your account has been verified earlier! please login";
 	const apiKey = jwt.sign({ date: Date.now(), email }, process.env.SECRET as string);
 	await edit("email", email, {
+		$unset: { tokenVerify: 1 },
 		verified: true,
-		tokenVerify: false,
 		apiKey
 	});
 	return user.tokenVerify === token;
