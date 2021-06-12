@@ -1,6 +1,7 @@
 import { RoutesConfig } from "../config/routes.config";
 import { Application } from "express";
 import cb from "../controller/users.controller";
+import middleware from "../middleware/user.middleware";
 
 export class UsersRoutes extends RoutesConfig {
 	constructor(app: Application) {
@@ -9,11 +10,11 @@ export class UsersRoutes extends RoutesConfig {
 	handler(): Application {
 		this.app.route("/users")
 			.get(cb.showUser)
-			.post(cb.createUser);
+			.post(middleware.post, cb.createUser);
 			
 		this.app.route("/users/:id")
 			.get(cb.getUser)
-			.patch(cb.editUser)
+			.patch(middleware.patch, cb.editUser)
 			.delete(cb.deleteUser);
 
 		return this.app;
