@@ -11,7 +11,7 @@ export class UsersRoutes extends RoutesConfig {
 			.get(cb.showUser)
 			.post(cb.createUser);
 			
-		this.app.route("/users/:userId")
+		this.app.route("/users/:id")
 			.get(cb.getUser)
 			.patch(cb.editUser)
 			.delete(cb.deleteUser);

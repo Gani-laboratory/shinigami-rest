@@ -18,9 +18,10 @@ class UsersController {
 			const { error } = editValidation(req.body);
 			if (error) return res.status(400).json({ status: res.statusCode, message: error.details[0].message });
 			const { username, password, email } = req.body;
-			const edit = await userService.edit("_id", req.params.userId, JSON.parse(JSON.stringify({ username, password, email })));
-			if (!edit) return res.status(400).json({ status: res.statusCode, message: `user with id ${req.params.userId} not found` });
-			return res.json({ status: res.statusCode, ...edit, koe: "oke" });
+			const { id } = req.params;
+			const edit = await userService.edit("_id", id, JSON.parse(JSON.stringify({ username, password, email })));
+			if (!edit) return res.status(400).json({ status: res.statusCode, message: `user with id ${id} not found` });
+			return res.json({ status: res.statusCode, message: `Success edit user with id ${id}` });
 		} catch {
 			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
 		}
@@ -28,10 +29,10 @@ class UsersController {
 
 	async getUser(req: Request, res: Response) {
 		try {
-			const { userId } = req.params;
-			const user = await userService.getById(userId);
+			const { id } = req.params;
+			const user = await userService.getById(id);
 			return res.json(user);
-		} catch (e) {
+		} catch {
 			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
 		}
 	}
@@ -42,8 +43,13 @@ class UsersController {
 	}
 
 	async deleteUser(req: Request, res: Response) {
-		const { userId } = req.params;
-		return res.json({ status: res.statusCode, data: await userService.destroy(userId) });
+		try {
+			const { id } = req.params;
+			await userService.destroy(id);
+			return res.json({ status: res.statusCode, message: `Success delete user with id ${id}` });
+		} catch {
+			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
+		}
 	}
 }
 
