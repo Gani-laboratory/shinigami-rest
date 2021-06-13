@@ -24,8 +24,8 @@ async function sendMail(email: string, token: string): Promise<void>
 
 const unless = function(middleware: any, ...paths: string[]) {
 	return function(req: Request, res: Response, next: NextFunction): void {
-	  const pathCheck = paths.some(path => path === req.path);
-	  pathCheck ? next() : middleware(req, res, next);
+	  	const pathCheck = paths.some(path => path.split(" ")[0] === req.method && new RegExp(path.split(" ")[1].replace(/\//g, "\\/").replace(/\*/g, "(.+)")).test(req.path));
+	  	pathCheck ? next() : middleware(req, res, next);
 	};
 };
 

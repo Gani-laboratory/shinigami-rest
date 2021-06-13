@@ -84,4 +84,4 @@ async function verify(email: string, token: string): Promise<boolean|string>
 	return user.tokenVerify === token;
 }
 
-export default { create, get, destroy, edit, verify, showAll, getById };
+export { create, get, destroy, edit, verify, showAll, getById, getByEmail };
