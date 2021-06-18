@@ -1,15 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getByEmail } from "../services/users.service";
 import { Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import { CustomRequest } from "../interface/request.interface";
-import NodeCache from "node-cache";
 import { UserDoc } from "interface/mongoose.interface";
-const storage = new NodeCache({
-	stdTTL: 3600,
-	checkperiod: 120,
-	useClones: false
-});
+import { storage } from "../util/simple";
+import jwt from "jsonwebtoken";
 
 enum roles {
     owner = 1,
@@ -30,6 +25,7 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction): void|Respo
 				account: account,
 				apikey: decoded as any
 			};
+			// res.append();
 			next();
 		} catch {
 			return res.status(403).json({ status: res.statusCode, message: "Invalid Api Key" });

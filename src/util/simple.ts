@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import nodemailer from "nodemailer";
 import { Request, Response, NextFunction } from "express";
+import NodeCache from "node-cache";
 
 const transport = nodemailer.createTransport({
 	service: "Gmail",
@@ -29,4 +30,10 @@ const unless = function(middleware: any, ...paths: string[]) {
 	};
 };
 
-export { sendMail, unless };
+const storage = new NodeCache({
+	stdTTL: 3600,
+	checkperiod: 120,
+	useClones: false
+});
+
+export { sendMail, unless, storage };
