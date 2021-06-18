@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import { verify } from "../services/users.service";
+import { verify, get } from "../services/users.service";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 class AuthController {
 	async verifyToken(req: Request, res: Response) {
@@ -12,6 +13,21 @@ class AuthController {
 			if (typeof message === "string") return res.status(400).json({ status: res.statusCode, message });
 			return res.json({ status: res.statusCode, message: "Your email has verified, please login!" });
 		});
+	}
+	async login(req: Request, res: Response) {
+		try {
+			const { name, password } = req.body;
+			console.log(name);
+			
+			const account = await get(name);
+			if (!account) return res.status(400).json({ status: res.statusCode, message: "this account is not registered" });
+			return bcrypt.compare(password, account.password, (_, same) => {
+				if (!same) return res.status(400).json({ status: res.statusCode, message: "wrong password" });
+				return res.json({ status: res.statusCode, message: "login successfully" });
+			});
+		} catch {
+			return res.status(500).json({ status: res.statusCode });	
+		}
 	}
 }
 
