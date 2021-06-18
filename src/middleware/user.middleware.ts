@@ -4,7 +4,7 @@ import { editValidation } from "../validation/user.validation";
 import { roles } from "./permission.middleware";
 import { CustomRequest } from "../interface/request.interface";
 import { UserDoc } from "interface/mongoose.interface";
-import { registerValidation } from "validation/auth.validation";
+import { registerValidation } from "../validation/auth.validation";
 
 class UsersMiddleware {
 	post(req: Request, res: Response, next: NextFunction) {
