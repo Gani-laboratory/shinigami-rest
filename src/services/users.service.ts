@@ -7,24 +7,9 @@ import jwt from "jsonwebtoken";
 import { randomBytes } from "crypto";
 import { roles } from "../middleware/permission.middleware";
 
-async function getByUsername(username: string)
+async function get(key: string, val: string)
 {
-	return await User.findOne({ username });
-}
-
-async function getByEmail(email: string)
-{
-	return await User.findOne({ email });
-}
-
-async function getById(id: string)
-{
-	return await User.findOne({ _id: id });
-}
-
-async function get(usernameOrEmail: string)
-{
-	return await getByEmail(usernameOrEmail) || await getByUsername(usernameOrEmail);
+	return await User.findOne({ [key]: val });
 }
 
 async function edit(key: string, value: string, body: Record<string, any>)
@@ -45,7 +30,7 @@ async function destroy(id: string)
 
 async function create(username: string, password: string, email: string)
 {
-	const user = await get(username) || await get(email);
+	const user = await get("username", username) || await get("email", email);
 	if (user) return { message: "This username or email is already use!" };
 	const saltHash = bcrypt.genSaltSync(10);
 	const hash = bcrypt.hashSync(password, saltHash);
@@ -68,7 +53,7 @@ async function showAll()
 
 async function verify(email: string, token: string): Promise<boolean|string>
 {
-	const user = await getByEmail(email);
+	const user = await get("email", email);
 	if (!user) return "Your account has been deleted";
 	if (user.tokenVerify != token) return "Invalid token";
 	if (user.verified) return "Your account has been verified earlier! please login";
@@ -84,4 +69,4 @@ async function verify(email: string, token: string): Promise<boolean|string>
 	return user.tokenVerify === token;
 }
 
-export { create, get, destroy, edit, verify, showAll, getById, getByEmail };
+export { create, get, destroy, edit, verify, showAll };

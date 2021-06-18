@@ -19,7 +19,7 @@ class AuthController {
 			const { name, password } = req.body;
 			console.log(name);
 			
-			const account = await get(name);
+			const account = await get("username", name) || await get("email", name);
 			if (!account) return res.status(400).json({ status: res.statusCode, message: "this account is not registered" });
 			return bcrypt.compare(password, account.password, (_, same) => {
 				if (!same) return res.status(400).json({ status: res.statusCode, message: "wrong password" });

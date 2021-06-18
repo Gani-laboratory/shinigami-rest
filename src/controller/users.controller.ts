@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import { create, edit, getById, showAll, destroy } from "../services/users.service";
+import { create, edit, get, showAll, destroy } from "../services/users.service";
 
 class UsersController {
 	async createUser(req: Request, res: Response) {
@@ -25,7 +25,7 @@ class UsersController {
 	async getUser(req: Request, res: Response) {
 		try {
 			const { id } = req.params;
-			const user = await getById(id);
+			const user = await get("_id", id);
 			return res.json(user);
 		} catch {
 			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	

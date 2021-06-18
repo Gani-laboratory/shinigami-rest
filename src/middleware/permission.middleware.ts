@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getByEmail } from "../services/users.service";
+import { get } from "../services/users.service";
 import { Response, NextFunction } from "express";
 import { CustomRequest } from "../interface/request.interface";
 import { UserDoc } from "interface/mongoose.interface";
@@ -18,7 +18,7 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction): void|Respo
 	return jwt.verify(apiKey as string, process.env.SECRET as string, async (e, decoded) => {
 		if (e) return res.status(400).json({ status: res.statusCode, message: "Invalid apikey" });
 		try {
-			const account = data ? data : await getByEmail((<any>decoded).email);
+			const account = data ? data : await get("email", (<any>decoded).email);
 			if (!data) storage.set(apiKey as string, account);
 			if ((<any>decoded).role !== account?.role) return res.status(403).json({ status: res.statusCode, message: "Dame desu yo >_<" });
 			req.locals = {
