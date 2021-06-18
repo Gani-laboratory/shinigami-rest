@@ -17,8 +17,6 @@ class AuthController {
 	async login(req: Request, res: Response) {
 		try {
 			const { name, password } = req.body;
-			console.log(name);
-			
 			const account = await get("username", name) || await get("email", name);
 			if (!account) return res.status(400).json({ status: res.statusCode, message: "this account is not registered" });
 			return bcrypt.compare(password, account.password, (_, same) => {
