@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response, NextFunction } from "express";
-import { registerValidation, editValidation } from "../validation/user.validation";
+import { editValidation } from "../validation/user.validation";
 import { roles } from "./permission.middleware";
 import { CustomRequest } from "../interface/request.interface";
 import { UserDoc } from "interface/mongoose.interface";
+import { registerValidation } from "validation/auth.validation";
 
 class UsersMiddleware {
 	post(req: Request, res: Response, next: NextFunction) {
