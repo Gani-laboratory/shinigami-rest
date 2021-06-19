@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { config } from "dotenv";
 config();
 
@@ -10,18 +11,32 @@ import debug from "debug";
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import routes from "./routes/main";
-import { unless } from "./util/simple";
-import { auth } from "./middleware/permission.middleware";
+import { myCustomMiddleware } from "./util/simple";
+import { isLoggedIn, verifyApiKey } from "./middleware/permission.middleware";
+import client from "./services/mongoose.service";
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
 const port = process.env.PORT || 3000;
 const debugLog: debug.IDebugger = debug("app");
 
+declare module "express-session" {
+	export interface SessionData {
+	  user: string;
+	}
+}
+
 app.use(express.json(), express.urlencoded({ extended: true }), cors(), session({
+	resave: false,
+	saveUninitialized: false,
 	secret: process.env.SESSION_KEY as string,
-	store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI })
-}), unless(auth, "GET /verify", "POST /users", "POST /login"));
+	store: MongoStore.create({ clientPromise: client, stringify: false }),
+	name: "sid",
+	cookie: {
+		// maxAge: 1000 * 60
+		maxAge: 1000 * 60 * 60
+	}
+}), myCustomMiddleware(verifyApiKey, "onlyFor", "GET /api/*"), myCustomMiddleware(isLoggedIn, "onlyFor", "GET /users/*", "GET /users", "PATCH /users"));
 
 const loggerOptions: expressWinston.LoggerOptions = {
 	transports: [new winston.transports.Console()],

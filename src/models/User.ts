@@ -1,4 +1,4 @@
-import mongoose from "../services/mongoose.service";
+import mongoose from "mongoose";
 import { UserDoc } from "../interface/mongoose.interface";
 const schema = new mongoose.Schema<UserDoc>({
 	username: {

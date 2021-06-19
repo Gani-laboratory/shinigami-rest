@@ -23,10 +23,11 @@ async function sendMail(email: string, token: string): Promise<void>
 	});
 }
 
-const unless = function(middleware: any, ...paths: string[]) {
+const myCustomMiddleware = function(middleware: any, mode: "unless"|"onlyFor", ...paths: string[]) {
 	return function(req: Request, res: Response, next: NextFunction): void {
 	  	const pathCheck = paths.some(path => path.split(" ")[0] === req.method && new RegExp(path.split(" ")[1].replace(/\//g, "\\/").replace(/\*/g, "(.+)")).test(req.path));
-	  	pathCheck ? next() : middleware(req, res, next);
+	  	if (mode === "unless") pathCheck ? next() : middleware(req, res, next);
+		else pathCheck ? middleware(req, res, next) : next();
 	};
 };
 
@@ -36,4 +37,4 @@ const storage = new NodeCache({
 	useClones: false
 });
 
-export { sendMail, unless, storage };
+export { sendMail, myCustomMiddleware, storage };
