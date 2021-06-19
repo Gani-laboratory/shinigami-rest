@@ -2,6 +2,8 @@
 import { Request, Response } from "express";
 import { create, edit, get, showAll, destroy } from "../services/users.service";
 import jwt from "jsonwebtoken";
+import { CustomRequest } from "interface/request.interface";
+import { UserDoc } from "interface/mongoose.interface";
 
 class UsersController {
 	async createUser(req: Request, res: Response) {
@@ -17,11 +19,14 @@ class UsersController {
 			const { id } = req.params;
 			const editUser = await edit("_id", id, JSON.parse(JSON.stringify({ username, password, email })));
 			if (!editUser) return res.status(400).json({ status: res.statusCode, message: `user with id ${id} not found` });
-			req.session.user = jwt.sign(editUser.toJSON(), process.env.SESSION_KEY as string);
-			return req.session.save(e => {
-				if (e) return res.status(500).json({ status: res.statusCode, message: "Oops, ada kesalahan diserver" });
-				return res.json({ status: res.statusCode, message: `Success edit user with id ${id}` });
-			});
+			if (id === ((req as CustomRequest).locals.account as UserDoc)._id) {
+				req.session.user = jwt.sign(editUser.toJSON(), process.env.SESSION_KEY as string);
+				return req.session.save(e => {
+					if (e) return res.status(500).json({ status: res.statusCode, message: "Oops, ada kesalahan diserver" });
+					return res.json({ status: res.statusCode, message: `Success edit user with id ${id}` });
+				});
+			}
+			return res.json({ status: res.statusCode, message: `Success edit user with id ${id}` });
 		} catch {
 			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
 		}
@@ -46,10 +51,14 @@ class UsersController {
 		try {
 			const { id } = req.params;
 			const user = await destroy(id);
-			return req.session.destroy(e => {
-				if (e) return res.status(500).json({ status: res.statusCode, message: "Oops, ada kesalahan diserver" });
-				return user.deletedCount ? res.json({ status: res.statusCode, message: `Success delete user with id ${id}` }) : res.status(404).json({ status: res.statusCode, message: `User with id ${id} has been deleted` });
-			});
+			if (!user.deletedCount) return res.status(404).json({ status: res.statusCode, message: `User with id ${id} has been deleted` });
+			if (id === ((req as CustomRequest).locals.account as UserDoc)._id) {
+				return req.session.destroy(e => {
+					if (e) return res.status(500).json({ status: res.statusCode, message: "Oops, ada kesalahan diserver" });
+					return res.json({ status: res.statusCode, message: `Success delete user with id ${id}` });
+				});
+			}
+			return res.json({ status: res.statusCode, message: `Success delete user with id ${id}` });
 		} catch {
 			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
 		}

@@ -36,7 +36,7 @@ app.use(express.json(), express.urlencoded({ extended: true }), cors(), session(
 		// maxAge: 1000 * 60
 		maxAge: 1000 * 60 * 60
 	}
-}), myCustomMiddleware(isLoggedIn, "onlyFor", "GET /users/*", "GET /users", "PATCH /users"), myCustomMiddleware(verifyApiKey, "onlyFor", "GET /api/*"));
+}), myCustomMiddleware(isLoggedIn, "onlyFor", "GET /users/*", "DELETE /users/*", "PATCH /users/*", "GET /users"), myCustomMiddleware(verifyApiKey, "onlyFor", "GET /api/*"));
 
 const loggerOptions: expressWinston.LoggerOptions = {
 	transports: [new winston.transports.Console()],
