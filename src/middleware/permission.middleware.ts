@@ -16,15 +16,11 @@ const verifyApiKey = (req: CustomRequest, res: Response, next: NextFunction): vo
 	if (!apiKey) return res.status(401).json({ status: res.statusCode, message: "Tidak ada x-apikey di header" });
 	const data: UserDoc = storage.get(apiKey as string) as UserDoc;
 	return jwt.verify(apiKey as string, process.env.API_KEY as string, async (e, decoded) => {
-		if (e) return res.status(400).json({ status: res.statusCode, message: "Invalid apikey" });
+		if (e) return res.status(400).json({ status: res.statusCode, message: "apikey tidak valid" });
 		try {
 			const account = data ? data : await get("email", (<any>decoded).email);
 			if (!data) storage.set(apiKey as string, account);
-			if ((<any>decoded).role !== account?.role) return res.status(403).json({ status: res.statusCode, message: "Dame desu yo >_<" });
-			req.locals = {
-				account: account,
-				apikey: decoded as any
-			};
+			if (apiKey !== account?.apiKey) return res.status(403).json({ status: res.statusCode, message: "apikey tidak valid" });
 			// res.append();
 			next();
 		} catch {

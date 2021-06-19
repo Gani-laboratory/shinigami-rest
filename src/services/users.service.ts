@@ -59,7 +59,7 @@ async function verify(email: string, token: string): Promise<boolean|string>
 	if (user.verified) return "Your account has been verified earlier! please login";
 	const isOwner = process.env.OWNER?.split(" ").findIndex(v => v === email) !== -1;
 	const role = isOwner ? roles.owner : roles.member;
-	const apiKey = jwt.sign({ date: Date.now(), email, role }, process.env.API_KEY as string);
+	const apiKey = jwt.sign({ date: Date.now(), email }, process.env.API_KEY as string);
 	await edit("email", email, {
 		$unset: { tokenVerify: 1 },
 		verified: true,
