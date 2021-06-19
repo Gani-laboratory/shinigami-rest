@@ -7,6 +7,8 @@ import winston from "winston";
 import expressWinston from "express-winston";
 import cors from "cors";
 import debug from "debug";
+import MongoStore from "connect-mongo";
+import session from "express-session";
 import routes from "./routes/main";
 import { unless } from "./util/simple";
 import { auth } from "./middleware/permission.middleware";
@@ -16,7 +18,10 @@ const server: http.Server = http.createServer(app);
 const port = process.env.PORT || 3000;
 const debugLog: debug.IDebugger = debug("app");
 
-app.use(express.json(), express.urlencoded({ extended: true }), cors(), unless(auth, "GET /verify", "POST /users", "POST /login"));
+app.use(express.json(), express.urlencoded({ extended: true }), cors(), session({
+	secret: process.env.SESSION_KEY as string,
+	store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI })
+}), unless(auth, "GET /verify", "POST /users", "POST /login"));
 
 const loggerOptions: expressWinston.LoggerOptions = {
 	transports: [new winston.transports.Console()],

@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 class AuthController {
 	async verifyToken(req: Request, res: Response) {
 		const { token } = req.params;
-		jwt.verify(token, process.env.SECRET as string, {}, async (err, decode) => {
+		jwt.verify(token, process.env.JWT_KEY as string, {}, async (err, decode) => {
 			if (err) return res.status(400).json({ status: res.statusCode, message: "invalid token" });
 			const message = await verify((<any>decode).email, token);
 			if (typeof message === "string") return res.status(400).json({ status: res.statusCode, message });

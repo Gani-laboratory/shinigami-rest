@@ -15,7 +15,7 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction): void|Respo
 	const apiKey = req.headers["x-apikey"];
 	if (!apiKey) return res.status(401).json({ status: res.statusCode, message: "Missing x-apikey in header" });
 	const data: UserDoc = storage.get(apiKey as string) as UserDoc;
-	return jwt.verify(apiKey as string, process.env.SECRET as string, async (e, decoded) => {
+	return jwt.verify(apiKey as string, process.env.JWT_KEY as string, async (e, decoded) => {
 		if (e) return res.status(400).json({ status: res.statusCode, message: "Invalid apikey" });
 		try {
 			const account = data ? data : await get("email", (<any>decoded).email);

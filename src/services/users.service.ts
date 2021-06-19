@@ -35,7 +35,7 @@ async function create(username: string, password: string, email: string)
 	const saltHash = bcrypt.genSaltSync(10);
 	const hash = bcrypt.hashSync(password, saltHash);
 	const buff = randomBytes(20);
-	const token = jwt.sign({ token: buff.toString("hex"), email }, process.env.SECRET as string);
+	const token = jwt.sign({ token: buff.toString("hex"), email }, process.env.JWT_KEY as string);
 	const data = new User({ username, password: hash, email, verified: false, tokenVerify: token, apiKey: false });
 	await data.save();
 	sendMail(email, token);
@@ -59,7 +59,7 @@ async function verify(email: string, token: string): Promise<boolean|string>
 	if (user.verified) return "Your account has been verified earlier! please login";
 	const isOwner = process.env.OWNER?.split(" ").findIndex(v => v === email) !== -1;
 	const role = isOwner ? roles.owner : roles.member;
-	const apiKey = jwt.sign({ date: Date.now(), email, role }, process.env.SECRET as string);
+	const apiKey = jwt.sign({ date: Date.now(), email, role }, process.env.JWT_KEY as string);
 	await edit("email", email, {
 		$unset: { tokenVerify: 1 },
 		verified: true,
