@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { create, edit, get, showAll, destroy } from "../services/users.service";
+import jwt from "jsonwebtoken";
 
 class UsersController {
 	async createUser(req: Request, res: Response) {
@@ -16,7 +17,11 @@ class UsersController {
 			const { id } = req.params;
 			const editUser = await edit("_id", id, JSON.parse(JSON.stringify({ username, password, email })));
 			if (!editUser) return res.status(400).json({ status: res.statusCode, message: `user with id ${id} not found` });
-			return res.json({ status: res.statusCode, message: `Success edit user with id ${id}` });
+			req.session.user = jwt.sign(editUser.toJSON(), process.env.SESSION_KEY as string);
+			return req.session.save(e => {
+				if (e) return res.status(500).json({ status: res.statusCode, message: "Oops, ada kesalahan diserver" });
+				return res.json({ status: res.statusCode, message: `Success edit user with id ${id}` });
+			});
 		} catch {
 			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
 		}
@@ -41,7 +46,10 @@ class UsersController {
 		try {
 			const { id } = req.params;
 			const user = await destroy(id);
-			return user.deletedCount ? res.json({ status: res.statusCode, message: `Success delete user with id ${id}` }) : res.status(404).json({ status: res.statusCode, message: `User with id ${id} has been deleted` });
+			return req.session.destroy(e => {
+				if (e) return res.status(500).json({ status: res.statusCode, message: "Oops, ada kesalahan diserver" });
+				return user.deletedCount ? res.json({ status: res.statusCode, message: `Success delete user with id ${id}` }) : res.status(404).json({ status: res.statusCode, message: `User with id ${id} has been deleted` });
+			});
 		} catch {
 			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
 		}

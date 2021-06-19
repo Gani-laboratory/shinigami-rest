@@ -3,6 +3,15 @@
 import nodemailer from "nodemailer";
 import { Request, Response, NextFunction } from "express";
 import NodeCache from "node-cache";
+import jwt from "jsonwebtoken";
+
+const decodeApikey = (token: string) => {
+	return jwt.verify(token, process.env.API_KEY as string);
+};
+
+const decodeSession = (token: string) => {
+	return jwt.verify(token, process.env.SESSION_KEY as string);
+};
 
 const transport = nodemailer.createTransport({
 	service: "Gmail",
@@ -37,4 +46,4 @@ const storage = new NodeCache({
 	useClones: false
 });
 
-export { sendMail, myCustomMiddleware, storage };
+export { sendMail, myCustomMiddleware, decodeApikey, decodeSession, storage };
