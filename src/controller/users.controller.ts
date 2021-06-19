@@ -40,8 +40,8 @@ class UsersController {
 	async deleteUser(req: Request, res: Response) {
 		try {
 			const { id } = req.params;
-			await destroy(id);
-			return res.json({ status: res.statusCode, message: `Success delete user with id ${id}` });
+			const user = await destroy(id);
+			return user.deletedCount ? res.json({ status: res.statusCode, message: `Success delete user with id ${id}` }) : res.status(404).json({ status: res.statusCode, message: `User with id ${id} has been deleted` });
 		} catch {
 			return res.status(400).json({ status: res.statusCode, message: "Invalid id" });	
 		}
