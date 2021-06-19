@@ -32,12 +32,8 @@ const isLoggedIn = (req: CustomRequest, res: Response, next: NextFunction): void
 	if (!req.session.user) return res.status(403).json({ status: res.statusCode, message: "anda belum login" });
 	return jwt.verify(req.session.user, process.env.SESSION_KEY as string, {}, async (err, decoded) => {
 		if (err) return res.status(403).json({ status: res.statusCode, message: "Hemker kah ?" });
-		const user = await get("email", (decoded as any).email);
-		if (!user) return res.status(404).json({ status: res.statusCode, message: "akun ini telah di hapus" });
-		if (req.session.user !== jwt.sign(user.toJSON(), process.env.SESSION_KEY as string)) return res.status(403).json({ status: res.statusCode, message: "Ngehek kok ga ijin :v" });
 		req.locals = {
-			account: user,
-			apikey: decoded as any
+			account: decoded as UserDoc,
 		};
 		next();
 	});
