@@ -1,6 +1,9 @@
-# Example Rest API built with [expressjs](https://expressjs.com/) and written with [typescript](typescriptlang.org/)
+<div class="center">
+</div>
 
-## Usage
+## Example Rest API built with [expressjs](https://expressjs.com/) and written with [typescript](typescriptlang.org/)
+
+### Usage
 
 * Clone the project
 
@@ -19,3 +22,4 @@ cd shinigami-rest && npm install
 ```bash
 npm start
 ```
+  
