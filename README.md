@@ -1,4 +1,4 @@
-# Rest api built with [expressjs](https://expressjs.com/) and written with [typescript](typescriptlang.org/)
+# Example Rest API built with [expressjs](https://expressjs.com/) and written with [typescript](typescriptlang.org/)
 
 ## Usage
 
@@ -11,7 +11,7 @@ git clone https://github.com/QUERY-GANI/shinigami-rest.git
 * Installation
 
 ```bash
-npm install
+cd shinigami-rest && npm install
 ```
 
 * Start
