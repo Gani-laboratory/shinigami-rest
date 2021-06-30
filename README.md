@@ -1,4 +1,4 @@
-# Rest api build by expressjs
+# Rest api built with [expressjs](https://expressjs.com/) and written with [typescript](typescriptlang.org/)
 
 ## Usage
 
