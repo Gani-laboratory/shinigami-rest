@@ -16,8 +16,8 @@ const decodeSession = (token: string) => {
 const transport = nodemailer.createTransport({
 	service: "Gmail",
 	auth: {
-		user: "bindakun2nd@gmail.com",
-		pass: "yhgamer123"
+		user: process.env.SMTP_EMAIL,
+		pass: process.env.SMTP_PASS
 	},
 });
 
